@@ -1,0 +1,12 @@
+---
+# handlers file for setup-reposerver
+
+- name: initial_reposync
+  shell: /usr/sbin/syncrepo.sh
+        
+- name: restart_nginx
+  systemd:
+          daemon_reload: yes
+          name: nginx
+          enabled: yes
+          state: restarted

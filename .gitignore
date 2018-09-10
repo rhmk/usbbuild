@@ -1,0 +1,15 @@
+*.retry
+*~
+*.swp
+*.swo
+muff*
+CONTENT/*.retry
+CONTENT/downloads/redhat-repos/*
+CONTENT/downloads/ansible-tower-setup-bundle*
+CONTENT/data/ansible-ssh-key
+CONTENT/data/ansible-ssh-key.pub
+CONTENT/data/authorized_keys
+CONTENT/data/tower_license*
+CONTENT/ansible-files/myvars.yml
+CONTENT/ansible-files/tower-license.*
+

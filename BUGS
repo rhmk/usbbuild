@@ -1,0 +1,13 @@
+## KNOWN BUGS
+
+0001 - network --onboot=yes --bootproto=dhcp, still sets ONBOOT=no in config => seems ok now
+0002 - network not available in guest build
+
+
+## Feature Requests
+1001 - change hostname to other than localhost
+1002 - currently dns setup contains all mac address. why not do dynamically with
+       virsh net-update example_net add-last ip-dhcp-host '<host mac="{{ demo_mac_prefix + item.key.id }}" name="{{ item.key }}.example.com" ip="{{ demo_network_prefix + item.key.id }}"/>' --live --config  --parent-index 0; done
+       see also https://jamielinux.com/docs/libvirt-networking-handbook/appendix/dhcp-host-entries.html
+
+

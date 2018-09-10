@@ -1,0 +1,9 @@
+- hosts: localhost
+
+  vars:
+         tower_adminpw: "redhat"
+         tower_license: /var/lib/awx/projects/rhsap-demo/tower-license.yml
+         
+  roles:
+         - tower-install
+         - setup-reposerver-on-tower

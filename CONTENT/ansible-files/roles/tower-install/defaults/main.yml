@@ -1,0 +1,7 @@
+---
+# defaults file for tower-install
+towerversion: 3.2.6-1
+towerurl: https://releases.ansible.com/ansible-tower/setup-bundle/ansible-tower-setup-bundle-{{ towerversion }}.el7.tar.gz
+tower_adminpw: "redhat"
+tower_license: /root/tower_license.txt
+

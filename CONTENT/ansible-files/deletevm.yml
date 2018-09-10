@@ -1,0 +1,14 @@
+- hosts: localhost
+  gather_facts: no
+  become: yes
+
+  vars_prompt:
+  - name: "deployment"
+    prompt: "Which vm-config file to delete?"
+    private: no
+
+  vars_files:
+  - config/{{ deployment }}.yml
+
+  roles:
+  - vm-delete

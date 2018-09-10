@@ -1,0 +1,36 @@
+---
+# defaults file for vm-create
+
+vmdir: /var/lib/libvirt/images/
+template:
+  rhel7: '{{ vmdir + "rhel7-backing.qcow2" }}'
+
+vmnet:
+  netname: example_net
+  basemac: "52:54:00:20:20"
+qemu:
+  machine: pc-i440fx-rhel7.0.0
+  cpu: Penryn
+  emulator: /usr/libexec/qemu-kvm
+
+
+# qemu config cpu needs to be adapted to something automatic
+# This should be minimum for SAP
+#  cpu: Haswell-noTSX
+
+#vms:
+#  vm31:
+#    id: 31
+#    tmpl: rhel
+#    cpu: 2
+#    mem: 33554432
+#    addisk: 120
+#    third: 120
+#  vm32:
+#    id: 32
+#    tmpl: rhel
+#    cpu: 2
+#    mem: 33554432
+#    addisk: 120
+#    third: 120
+

@@ -1,0 +1,75 @@
+---
+# tasks file for tower-install
+- name: ensure USB Stick with tower is mounted
+  mount:
+    src: LABEL=CONTENT
+    path: /tmp/usb
+    fstype: ext4
+    state: mounted
+    opts: defaults,noauto
+  notify: unmount USB stick
+
+- name: get tower install path
+  shell: |
+          ls -d1 /tmp/usb/downloads/ansible-tower-setup-bundle* 2> /dev/null | head -1
+  register: towerpath
+ 
+- name: Check if Towerpath.stdout is set
+  fail: msg="Cannot find tower installation directory"
+  when: ( towerpath.stdout == "" )
+
+- name: set admin password
+  lineinfile:
+     path: "{{ towerpath.stdout + '/inventory' }}"
+     regexp: "^admin_password="
+     line: "admin_password='{{ tower_adminpw }}'"
+  tags:
+    - tower_setup
+    - tower_setup_config
+
+- name: set internal passwords
+  lineinfile:
+     path: "{{ towerpath.stdout + '/inventory' }}"
+     regexp: "^{{ item }}="
+     line: "{{ item }}=\'{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}\'"
+  with_items:
+     - pg_password
+     - rabbitmq_password
+  tags:
+    - tower_setup
+    - tower_setup_config
+  
+- name: start installation (see /var/log/tower-install.log)
+  shell: ./setup.sh | tee /var/log/tower-install.log
+  args:
+    chdir: "{{ towerpath.stdout }}"
+  tags:
+    - tower_setup
+
+- name: accept tower license
+  lineinfile:
+    path: "{{ tower_license }}"
+    insertafter: "{"
+    regexp: '^    "eula_accepted'
+    line: '    "eula_accepted" : "true",'
+  tags:
+    - add_license
+    - prepare_license_file
+
+- name: configure license
+  shell: |
+    curl -k -H "Content-Type: application/json" -X POST -u admin:{{ tower_adminpw }} -d '{{ lookup( "file", tower_license ) }}' https://localhost/api/v2/config/
+  tags:
+    - add_license
+
+- name: ensure libvirt python is installed
+  yum:
+    name: libvirt-python
+    state: present
+
+- name: ensure USB is no longer mounted
+  mount:
+    src: LABEL=CONTENT
+    path: /tmp/usb
+    state: absent
+

@@ -1,0 +1,139 @@
+---
+# tasks file for setup-virtualization
+#
+- name: ensure possible vms are configured in /etc/hosts (part1/2)
+  lineinfile:
+          path: /etc/hosts
+          state: present
+          line: "# valid VM-IPs for use in demo"
+
+- name: ensure possible vms are configured in /etc/hosts (part2/2)
+  lineinfile:
+          path: /etc/hosts
+          line: '{{ demo_network_prefix + item + " vm" + item + "." + demo_domain + " vm" + item }}'
+          insertafter: "# valid VM-IPs for use in demo"
+          regexp: '{{ "^" + demo_network_prefix + item + " .*$" }}'
+  with_sequence: start=99 end=10 stride=-1
+          
+- name: ensure tower is configure with ip {{ demo_network_prefix }}1
+  lineinfile:
+          path: /etc/hosts
+          line: '{{ demo_network_prefix + "1 tower." + demo_domain + " tower" }}'
+          insertafter: "# valid VM-IPs for use in demo"
+          regexp: '{{ "^" + demo_network_prefix + "1 .*$" }}'
+
+- name: ensure required packages for virtualization are installed
+  package:
+          name: "{{ item }}"
+          state: present
+  with_items:
+          - qemu-kvm
+          - qemu-img
+          - libguestfs
+          - libvirt
+          - libvirt-python
+          - virt-manager
+          - libvirt-client
+          - virt-install
+          - libguestfs-tools
+
+- name: ensure libvirtd service is running
+  service: 
+    name: libvirtd
+    state: started
+    enabled: true
+  tags:
+          net-setup
+
+# Gather facts about networks
+# Facts will be available as 'ansible_libvirt_networks'
+- virt_net:
+    command: facts
+  tags:
+          net-setup
+
+- name: ensure demonet is defined
+  virt_net:
+    command: define
+    name: '{{ demonet }}'
+    xml: '{{ lookup("template", "demonet.xml.j2") }}'
+  tags:
+          net-setup
+
+- name: ensure demonet is created
+  virt_net:
+    command: start
+    name: '{{ demonet }}'
+  when: ( ansible_libvirt_networks.{{ demonet }} is not defined ) or ( ansible_libvirt_networks.{{ demonet }}.state == "inactive") 
+    #ignore_errors: true
+  tags:
+          net-setup
+  # Todo replace ignore errors: Check if "libvirt_networks.{{ demo_domain | replace(".","_") }} exist
+
+- name: ensure demonet is autostarted
+  virt_net:
+          autostart: yes
+          name: '{{ demonet }}'
+  tags:
+          net-setup
+
+- debug: var=ansible_libvirt_networks.{{ demonet }}
+  tags:
+          net-setup
+
+- name: ensure default network is stopped
+  virt_net:
+    command: destroy
+    name: default
+  when: ansible_libvirt_networks.default is defined
+  tags:
+          net-setup
+
+- name: ensure default network is removed
+  virt_net:
+          command: undefine
+          name: default
+  when: ansible_libvirt_networks.default is defined
+  tags:
+          net-setup
+
+  ### virtinstall 
+- name: ensure backing image is build 
+  shell: |
+     usbstick=$(lsblk -nlI 8,252 -o NAME,LABEL | awk '( $2 == "RHEL_DEMO" ) { print $1} ' | tr -d '[0-9]')
+     [ -z "${usbstick}" ] && echo "USB STICK has been removed" && exit 1
+     qemu-img create -f qcow2 -o preallocation=metadata  /var/lib/libvirt/images/rhel7-backing.qcow2 {{ kvm_template_size | default( "8G") }} &&\
+     virt-install --noautoconsole --wait -1 \
+         --os-variant=rhel7 -n rhel7-backing --memory 1024  --vcpus 1 --boot hd \
+         --network=bridge:lan_{{ demonet }},model=virtio \
+         --disk /dev/${usbstick} \
+         --disk /var/lib/libvirt/images/rhel7-backing.qcow2,bus=virtio,cache=none \
+         --events on_reboot=destroy 
+  args:
+    creates: /var/lib/libvirt/images/rhel7-backing.qcow2
+  register: vm_templ_create
+  failed_when: vm_templ_create.rc > 0
+  changed_when: vm_templ_create.rc == 0
+  tags:
+          create-backing
+
+- name: ensure the templating vm is destroyed
+  virt:
+         name: rhel7-backing
+         command: undefine
+  ignore_errors: true
+  tags:
+          create-backing
+          destroy-backing-vm
+
+- name: Ensure User AWX can execute as root on localhost
+  lineinfile: 
+    path: /etc/sudoers
+    state: present
+    regexp: '^awx ALL='
+    line: 'awx ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+
+
+          
+

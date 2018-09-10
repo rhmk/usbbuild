@@ -1,0 +1,40 @@
+#!/bin/bash
+
+echo "updating boot records for syslinux.cfg"
+
+ansible-playbook /dev/stdin <<EOT
+---
+- hosts: localhost
+  become: yes
+
+  tasks:
+  - name: remove all default entryies
+    lineinfile:
+      path: /run/media/mkoch/RHEL_DEMO/syslinux/syslinux.cfg
+      regexp: "  menu default"
+      state: absent
+
+  - name: make sure syslinux.cfg contains autoinstall option
+    blockinfile:
+      path: /run/media/mkoch/RHEL_DEMO/syslinux/syslinux.cfg
+      insertbefore: "^label linux.*" 
+      marker_begin: "Inserted by USB creation script"
+      block: |
+        label autoinstall
+          menu label ^Autoinstall Red Hat Enterprise Linux
+          menu default
+          kernel vmlinuz
+          append initrd=initrd.img inst.stage2=hd:LABEL=RHEL_DEMO ip=dhcp inst.lang=de_DE.UTF-8 inst.keymap=de-latin1-nodeadkeys inst.sshd ks=hd:LABEL=CONTENT:kickstarts/base-srv-ks.cfg
+  
+  - name: make sure EFI boot  contains autoinstall option
+    blockinfile:
+      path: /run/media/mkoch/RHEL_DEMO/EFI/BOOT/grub.cfg
+      insertbefore: "^menuentry 'Install Red Hat Enterprise Linux.*"
+      marker_begin: "Inserted by USB creation script"
+      block: |
+        menuentry 'Install Red Hat Enterprise Linux 7.4' --class fedora --class gnu-linux --class gnu --class os {
+                linuxefi /syslinux/vmlinuz inst.stage2=hd:LABEL=RHEL_DEMO quiet ip=dhcp inst.lang=de_DE.UTF-8 inst.keymap=de-latin1-nodeadkeys inst.sshd ks=hd:LABEL=CONTENT:kickstarts/base-srv-ks.cfg
+                initrdefi /syslinux/initrd.img
+        }
+
+EOT

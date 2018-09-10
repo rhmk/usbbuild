@@ -1,0 +1,109 @@
+<network>
+  <name>{{ demo_domain | replace(".","_") }}</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='lan_{{ demo_domain | replace(".","_") }}' stp='on' delay='0'/>
+  <mac address='{{ demo_mac_prefix }}01'/>
+  <domain name='{{ demo_domain }}'/>
+  <ip address='{{ demo_network_prefix }}1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='{{ demo_network_prefix }}101' end='{{ demo_network_prefix }}200'/>
+      <host mac='{{ demo_mac_prefix }}02' name='tower.{{ demo_domain }}' ip='{{ demo_network_prefix }}2'/>
+      <host mac='{{ demo_mac_prefix }}10' name='vm10.{{ demo_domain }}' ip='{{ demo_network_prefix }}10'/>
+      <host mac='{{ demo_mac_prefix }}11' name='vm11.{{ demo_domain }}' ip='{{ demo_network_prefix }}11'/>
+      <host mac='{{ demo_mac_prefix }}12' name='vm12.{{ demo_domain }}' ip='{{ demo_network_prefix }}12'/>
+      <host mac='{{ demo_mac_prefix }}13' name='vm13.{{ demo_domain }}' ip='{{ demo_network_prefix }}13'/>
+      <host mac='{{ demo_mac_prefix }}14' name='vm14.{{ demo_domain }}' ip='{{ demo_network_prefix }}14'/>
+      <host mac='{{ demo_mac_prefix }}15' name='vm15.{{ demo_domain }}' ip='{{ demo_network_prefix }}15'/>
+      <host mac='{{ demo_mac_prefix }}16' name='vm16.{{ demo_domain }}' ip='{{ demo_network_prefix }}16'/>
+      <host mac='{{ demo_mac_prefix }}17' name='vm17.{{ demo_domain }}' ip='{{ demo_network_prefix }}17'/>
+      <host mac='{{ demo_mac_prefix }}18' name='vm18.{{ demo_domain }}' ip='{{ demo_network_prefix }}18'/>
+      <host mac='{{ demo_mac_prefix }}19' name='vm19.{{ demo_domain }}' ip='{{ demo_network_prefix }}19'/>
+      <host mac='{{ demo_mac_prefix }}20' name='vm20.{{ demo_domain }}' ip='{{ demo_network_prefix }}20'/>
+      <host mac='{{ demo_mac_prefix }}21' name='vm21.{{ demo_domain }}' ip='{{ demo_network_prefix }}21'/>
+      <host mac='{{ demo_mac_prefix }}22' name='vm22.{{ demo_domain }}' ip='{{ demo_network_prefix }}22'/>
+      <host mac='{{ demo_mac_prefix }}23' name='vm23.{{ demo_domain }}' ip='{{ demo_network_prefix }}23'/>
+      <host mac='{{ demo_mac_prefix }}24' name='vm24.{{ demo_domain }}' ip='{{ demo_network_prefix }}24'/>
+      <host mac='{{ demo_mac_prefix }}25' name='vm25.{{ demo_domain }}' ip='{{ demo_network_prefix }}25'/>
+      <host mac='{{ demo_mac_prefix }}26' name='vm26.{{ demo_domain }}' ip='{{ demo_network_prefix }}26'/>
+      <host mac='{{ demo_mac_prefix }}27' name='vm27.{{ demo_domain }}' ip='{{ demo_network_prefix }}27'/>
+      <host mac='{{ demo_mac_prefix }}28' name='vm28.{{ demo_domain }}' ip='{{ demo_network_prefix }}28'/>
+      <host mac='{{ demo_mac_prefix }}29' name='vm29.{{ demo_domain }}' ip='{{ demo_network_prefix }}29'/>
+      <host mac='{{ demo_mac_prefix }}30' name='vm30.{{ demo_domain }}' ip='{{ demo_network_prefix }}30'/>
+      <host mac='{{ demo_mac_prefix }}31' name='vm31.{{ demo_domain }}' ip='{{ demo_network_prefix }}31'/>
+      <host mac='{{ demo_mac_prefix }}32' name='vm32.{{ demo_domain }}' ip='{{ demo_network_prefix }}32'/>
+      <host mac='{{ demo_mac_prefix }}33' name='vm33.{{ demo_domain }}' ip='{{ demo_network_prefix }}33'/>
+      <host mac='{{ demo_mac_prefix }}34' name='vm34.{{ demo_domain }}' ip='{{ demo_network_prefix }}34'/>
+      <host mac='{{ demo_mac_prefix }}35' name='vm35.{{ demo_domain }}' ip='{{ demo_network_prefix }}35'/>
+      <host mac='{{ demo_mac_prefix }}36' name='vm36.{{ demo_domain }}' ip='{{ demo_network_prefix }}36'/>
+      <host mac='{{ demo_mac_prefix }}37' name='vm37.{{ demo_domain }}' ip='{{ demo_network_prefix }}37'/>
+      <host mac='{{ demo_mac_prefix }}38' name='vm38.{{ demo_domain }}' ip='{{ demo_network_prefix }}38'/>
+      <host mac='{{ demo_mac_prefix }}39' name='vm39.{{ demo_domain }}' ip='{{ demo_network_prefix }}39'/>
+      <host mac='{{ demo_mac_prefix }}40' name='vm40.{{ demo_domain }}' ip='{{ demo_network_prefix }}40'/>
+      <host mac='{{ demo_mac_prefix }}41' name='vm41.{{ demo_domain }}' ip='{{ demo_network_prefix }}41'/>
+      <host mac='{{ demo_mac_prefix }}42' name='vm42.{{ demo_domain }}' ip='{{ demo_network_prefix }}42'/>
+      <host mac='{{ demo_mac_prefix }}43' name='vm43.{{ demo_domain }}' ip='{{ demo_network_prefix }}43'/>
+      <host mac='{{ demo_mac_prefix }}44' name='vm44.{{ demo_domain }}' ip='{{ demo_network_prefix }}44'/>
+      <host mac='{{ demo_mac_prefix }}45' name='vm45.{{ demo_domain }}' ip='{{ demo_network_prefix }}45'/>
+      <host mac='{{ demo_mac_prefix }}46' name='vm46.{{ demo_domain }}' ip='{{ demo_network_prefix }}46'/>
+      <host mac='{{ demo_mac_prefix }}47' name='vm47.{{ demo_domain }}' ip='{{ demo_network_prefix }}47'/>
+      <host mac='{{ demo_mac_prefix }}48' name='vm48.{{ demo_domain }}' ip='{{ demo_network_prefix }}48'/>
+      <host mac='{{ demo_mac_prefix }}49' name='vm49.{{ demo_domain }}' ip='{{ demo_network_prefix }}49'/>
+      <host mac='{{ demo_mac_prefix }}50' name='vm50.{{ demo_domain }}' ip='{{ demo_network_prefix }}50'/>
+      <host mac='{{ demo_mac_prefix }}51' name='vm51.{{ demo_domain }}' ip='{{ demo_network_prefix }}51'/>
+      <host mac='{{ demo_mac_prefix }}52' name='vm52.{{ demo_domain }}' ip='{{ demo_network_prefix }}52'/>
+      <host mac='{{ demo_mac_prefix }}53' name='vm53.{{ demo_domain }}' ip='{{ demo_network_prefix }}53'/>
+      <host mac='{{ demo_mac_prefix }}54' name='vm54.{{ demo_domain }}' ip='{{ demo_network_prefix }}54'/>
+      <host mac='{{ demo_mac_prefix }}55' name='vm55.{{ demo_domain }}' ip='{{ demo_network_prefix }}55'/>
+      <host mac='{{ demo_mac_prefix }}56' name='vm56.{{ demo_domain }}' ip='{{ demo_network_prefix }}56'/>
+      <host mac='{{ demo_mac_prefix }}57' name='vm57.{{ demo_domain }}' ip='{{ demo_network_prefix }}57'/>
+      <host mac='{{ demo_mac_prefix }}58' name='vm58.{{ demo_domain }}' ip='{{ demo_network_prefix }}58'/>
+      <host mac='{{ demo_mac_prefix }}59' name='vm59.{{ demo_domain }}' ip='{{ demo_network_prefix }}59'/>
+      <host mac='{{ demo_mac_prefix }}60' name='vm60.{{ demo_domain }}' ip='{{ demo_network_prefix }}60'/>
+      <host mac='{{ demo_mac_prefix }}61' name='vm61.{{ demo_domain }}' ip='{{ demo_network_prefix }}61'/>
+      <host mac='{{ demo_mac_prefix }}62' name='vm62.{{ demo_domain }}' ip='{{ demo_network_prefix }}62'/>
+      <host mac='{{ demo_mac_prefix }}63' name='vm63.{{ demo_domain }}' ip='{{ demo_network_prefix }}63'/>
+      <host mac='{{ demo_mac_prefix }}64' name='vm64.{{ demo_domain }}' ip='{{ demo_network_prefix }}64'/>
+      <host mac='{{ demo_mac_prefix }}65' name='vm65.{{ demo_domain }}' ip='{{ demo_network_prefix }}65'/>
+      <host mac='{{ demo_mac_prefix }}66' name='vm66.{{ demo_domain }}' ip='{{ demo_network_prefix }}66'/>
+      <host mac='{{ demo_mac_prefix }}67' name='vm67.{{ demo_domain }}' ip='{{ demo_network_prefix }}67'/>
+      <host mac='{{ demo_mac_prefix }}68' name='vm68.{{ demo_domain }}' ip='{{ demo_network_prefix }}68'/>
+      <host mac='{{ demo_mac_prefix }}69' name='vm69.{{ demo_domain }}' ip='{{ demo_network_prefix }}69'/>
+      <host mac='{{ demo_mac_prefix }}70' name='vm70.{{ demo_domain }}' ip='{{ demo_network_prefix }}70'/>
+      <host mac='{{ demo_mac_prefix }}71' name='vm71.{{ demo_domain }}' ip='{{ demo_network_prefix }}71'/>
+      <host mac='{{ demo_mac_prefix }}72' name='vm72.{{ demo_domain }}' ip='{{ demo_network_prefix }}72'/>
+      <host mac='{{ demo_mac_prefix }}73' name='vm73.{{ demo_domain }}' ip='{{ demo_network_prefix }}73'/>
+      <host mac='{{ demo_mac_prefix }}74' name='vm74.{{ demo_domain }}' ip='{{ demo_network_prefix }}74'/>
+      <host mac='{{ demo_mac_prefix }}75' name='vm75.{{ demo_domain }}' ip='{{ demo_network_prefix }}75'/>
+      <host mac='{{ demo_mac_prefix }}76' name='vm76.{{ demo_domain }}' ip='{{ demo_network_prefix }}76'/>
+      <host mac='{{ demo_mac_prefix }}77' name='vm77.{{ demo_domain }}' ip='{{ demo_network_prefix }}77'/>
+      <host mac='{{ demo_mac_prefix }}78' name='vm78.{{ demo_domain }}' ip='{{ demo_network_prefix }}78'/>
+      <host mac='{{ demo_mac_prefix }}79' name='vm79.{{ demo_domain }}' ip='{{ demo_network_prefix }}79'/>
+      <host mac='{{ demo_mac_prefix }}80' name='vm80.{{ demo_domain }}' ip='{{ demo_network_prefix }}80'/>
+      <host mac='{{ demo_mac_prefix }}81' name='vm81.{{ demo_domain }}' ip='{{ demo_network_prefix }}81'/>
+      <host mac='{{ demo_mac_prefix }}82' name='vm82.{{ demo_domain }}' ip='{{ demo_network_prefix }}82'/>
+      <host mac='{{ demo_mac_prefix }}83' name='vm83.{{ demo_domain }}' ip='{{ demo_network_prefix }}83'/>
+      <host mac='{{ demo_mac_prefix }}84' name='vm84.{{ demo_domain }}' ip='{{ demo_network_prefix }}84'/>
+      <host mac='{{ demo_mac_prefix }}85' name='vm85.{{ demo_domain }}' ip='{{ demo_network_prefix }}85'/>
+      <host mac='{{ demo_mac_prefix }}86' name='vm86.{{ demo_domain }}' ip='{{ demo_network_prefix }}86'/>
+      <host mac='{{ demo_mac_prefix }}87' name='vm87.{{ demo_domain }}' ip='{{ demo_network_prefix }}87'/>
+      <host mac='{{ demo_mac_prefix }}88' name='vm88.{{ demo_domain }}' ip='{{ demo_network_prefix }}88'/>
+      <host mac='{{ demo_mac_prefix }}89' name='vm89.{{ demo_domain }}' ip='{{ demo_network_prefix }}89'/>
+      <host mac='{{ demo_mac_prefix }}90' name='vm90.{{ demo_domain }}' ip='{{ demo_network_prefix }}90'/>
+      <host mac='{{ demo_mac_prefix }}91' name='vm91.{{ demo_domain }}' ip='{{ demo_network_prefix }}91'/>
+      <host mac='{{ demo_mac_prefix }}92' name='vm92.{{ demo_domain }}' ip='{{ demo_network_prefix }}92'/>
+      <host mac='{{ demo_mac_prefix }}93' name='vm93.{{ demo_domain }}' ip='{{ demo_network_prefix }}93'/>
+      <host mac='{{ demo_mac_prefix }}94' name='vm94.{{ demo_domain }}' ip='{{ demo_network_prefix }}94'/>
+      <host mac='{{ demo_mac_prefix }}95' name='vm95.{{ demo_domain }}' ip='{{ demo_network_prefix }}95'/>
+      <host mac='{{ demo_mac_prefix }}96' name='vm96.{{ demo_domain }}' ip='{{ demo_network_prefix }}96'/>
+      <host mac='{{ demo_mac_prefix }}97' name='vm97.{{ demo_domain }}' ip='{{ demo_network_prefix }}97'/>
+      <host mac='{{ demo_mac_prefix }}98' name='vm98.{{ demo_domain }}' ip='{{ demo_network_prefix }}98'/>
+      <host mac='{{ demo_mac_prefix }}99' name='vm99.{{ demo_domain }}' ip='{{ demo_network_prefix }}99'/>
+
+    </dhcp>
+  </ip>
+</network>
+

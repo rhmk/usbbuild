@@ -1,0 +1,49 @@
+---
+# tasks file for vm-delete
+- name: gather facts on runnign vms
+  virt: 
+    name: "{{ item.key }}@{{ deployment }}"
+    command: status
+  with_dict: "{{ vms }}"
+  register: vm_status
+
+- name: output facts
+  debug:
+    var: vm_status
+
+- name: Delete VMs
+  virt: 
+    name: "{{ item.key }}@{{ deployment }}"
+    command: destroy
+  with_dict: "{{ vms }}"
+  ignore_errors: true
+  # TODO: only run on VMs with status "running"
+
+- name: undefine VMs
+  virt: 
+    name: "{{ item.key }}@{{ deployment }}"
+    command: undefine
+  with_dict: "{{ vms }}"
+  ignore_errors: true
+  # TODO: only run on VMs which exist in status"
+
+- name: remove VM bootdisks
+  file: 
+    path: "{{ vmdir + item.key + '.qcow2' }}"
+    state: absent
+  with_dict: "{{ vms }}"
+
+- name: remove 2nd disks
+  file: 
+    path: "{{ vmdir + item.key + '_addisk.qcow2' }}"
+    state: absent
+  when: item.value.addisk is defined
+  with_dict: "{{ vms }}"
+
+- name: remove 3rd disks
+  file: 
+    path: "{{ vmdir + item.key + '_third.qcow2' }}"
+    state: absent
+  when: item.value.third is defined
+  with_dict: "{{ vms }}"
+

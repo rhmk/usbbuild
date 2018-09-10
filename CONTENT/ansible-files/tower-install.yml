@@ -1,0 +1,12 @@
+- hosts: localhost
+
+  vars:
+
+         towerversion: 3.2.6-1
+         towerurl: https://releases.ansible.com/ansible-tower/setup-bundle/ansible-tower-setup-bundle-{{ towerversion }}.el7.tar.gz
+         tower_adminpw: "redhat"
+         tower_license: /var/lib/awx/projects/rhsap-demo/tower-license.yml
+         
+  roles:
+         - tower-install
+         - setup-reposerver-on-tower

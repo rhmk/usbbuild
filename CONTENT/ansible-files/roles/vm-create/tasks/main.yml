@@ -1,0 +1,40 @@
+---
+# tasks file for vm-create
+- name: create VM Disks
+  shell: |
+    qemu-img create -f qcow2 -b "{{ template[item.value.tmpl] }}" "{{ item.key + '.qcow2' }}"
+  args:
+    chdir: "{{ vmdir }}"
+  with_dict: "{{ vms }}"
+
+- name: create 2nd Disks
+  shell: |
+    qemu-img create -f qcow2 "{{ item.key + '_addisk.qcow2' }}" "{{ item.value.addisk }}"G
+  args:
+    chdir: "{{ vmdir }}"
+  when: item.value.addisk is defined
+  with_dict: "{{ vms }}"
+
+- name: create 3rd Disks
+  shell: |
+    qemu-img create -f qcow2 "{{ item.key + '_third.qcow2' }}" "{{ item.value.third }}"G
+  args:
+    chdir: "{{ vmdir }}"
+  when: item.value.third is defined
+  with_dict: "{{ vms }}"
+
+- name: Create VMs
+  virt: 
+    name: "{{ item.key }}"
+    command: define
+    xml: "{{ lookup('template', 'vm_xml.j2') }}"
+  with_dict: "{{ vms }}"
+
+
+- name: Start VMs
+  virt: 
+    name: "{{ item.key }}@{{ deployment }}"
+    state: running
+  with_dict: "{{ vms }}"
+
+

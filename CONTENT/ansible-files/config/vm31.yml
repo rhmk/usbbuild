@@ -1,0 +1,6 @@
+vms:
+  vm31:
+    id: 31
+    tmpl: rhel7
+    cpu: 2
+    mem: 1048576

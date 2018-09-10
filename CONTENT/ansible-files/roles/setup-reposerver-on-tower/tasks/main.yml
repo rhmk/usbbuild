@@ -1,0 +1,72 @@
+---
+# tasks file for setup-reposerver
+#  we are installing on tower
+#  so nginx is used and should be running
+
+# required packages
+- name: ensure required packages are installed
+  package:
+          state: present
+          name: "{{ item }}"
+  with_items:
+          - createrepo
+          - yum-utils
+          - rhel-system-roles
+
+- name: ensure repository directories exist
+  file:
+          path: "{{ item }}"
+          owner: root
+          group: root
+          mode: 0755
+          setype: httpd_sys_content_t
+          state: directory
+  with_items:
+          - /var/www/html/repofiles
+          - /var/www/html/repos
+
+- name: ensure nginx is updated with the new locations
+  lineinfile:
+          path: /etc/nginx/nginx.conf
+          line: "        {{ item }}"
+          regexp: "        {{ item }}"
+          insertafter: "^ *location /static .*"
+          state: present
+  with_items:
+          - "location /repofiles { alias /var/www/html/repofiles/; autoindex on; }"
+          - "location /repos { alias /var/www/html/repos/; autoindex on; }"
+  notify: restart_nginx
+  tags:
+        - update_nginx_conf
+
+- name: ensure yum.conf does not verify https
+  lineinfile:
+          path: /etc/yum.conf
+          line: "sslverify=false"
+          insertafter: "[main]"
+          regexp: "^sslverify=.*"
+          state: present
+
+- name: ensure firewalld ports for http and https are open
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+          - http
+          - https
+          
+- name: ensure syncrepo script  is installed
+  template:
+          src: syncrepo.j2
+          dest: /usr/sbin/syncrepo.sh
+          mode: 0755
+  notify: initial_reposync
+
+- name: ensure Reposync Cron is installed
+  file:
+          src: /usr/sbin/syncrepo.sh
+          dest: /etc/cron.{{ reposync_cron }}/syncrepo.sh
+          state: link
+  when: ( reposync_cron is defined ) and ((reposync_cron == 'daily' ) or ( reposync_cron == 'monthly' ))

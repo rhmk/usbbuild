@@ -1,0 +1,24 @@
+---
+# tasks file for tower-update-license
+- name: update tower license file (accept EULA)
+  lineinfile:
+    path: "{{ tower_license }}"
+    insertafter: "{"
+    regexp: '^    "eula_accepted'
+    line: '    "eula_accepted" : "true",'
+  tags:
+    - add_license
+    - prepare_license_file
+
+- name: upload tower license file via API 
+  shell: |
+    curl -k -H "Content-Type: application/json" -X POST -u admin:{{ tower_adminpw }} -d '{{ lookup( "file", tower_license ) }}' https://localhost/api/v2/config/
+  tags:
+    - add_license
+
+- name: ensure USB is no longer mounted
+  mount:
+    src: LABEL=CONTENT
+    path: /tmp/usb
+    state: absent
+

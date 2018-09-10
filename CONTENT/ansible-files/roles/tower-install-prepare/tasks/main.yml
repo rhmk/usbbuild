@@ -1,0 +1,40 @@
+---
+# tasks file for tower-install
+- name: ensure USB Stick with tower is mounted
+  mount:
+    src: LABEL=CONTENT
+    path: /tmp/usb
+    fstype: ext4
+    state: mounted
+    opts: defaults,noauto
+
+- name: get tower install path
+  shell: |
+          ls -d1 /tmp/usb/downloads/ansible-tower-setup-bundle* 2> /dev/null | head -1
+  register: towerpath
+ 
+- name: Check if Towerpath.stdout is set
+  fail: msg="Cannot find tower installation directory"
+  when: ( towerpath.stdout == "" )
+
+- name: set admin password
+  lineinfile:
+     path: "{{ towerpath.stdout + '/inventory' }}"
+     regexp: "^admin_password="
+     line: "admin_password='{{ tower_adminpw }}'"
+  tags:
+    - tower_setup
+    - tower_setup_config
+
+- name: set internal passwords
+  lineinfile:
+     path: "{{ towerpath.stdout + '/inventory' }}"
+     regexp: "^{{ item }}="
+     line: "{{ item }}=\'{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}\'"
+  with_items:
+     - pg_password
+     - rabbitmq_password
+  tags:
+    - tower_setup
+    - tower_setup_config
+  

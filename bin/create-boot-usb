@@ -1,0 +1,99 @@
+#!/bin/bash
+
+usage() {
+echo usage: $(basename $0) isofile usb-device
+exit 1 
+}
+
+error() {
+  echo "ERROR: $1"
+  exit ${2:-1}
+}
+warn() {
+  echo "WARNING: $1"
+}
+
+exit_cleanup() {
+  sleep 10
+  umount -f /mnt
+}
+  
+
+[ $# -eq 0 ] && usage
+
+iso=${1}
+name=RHEL_DEMO
+[ ! -f "${iso}" ] && error "isoimage does not exist"
+
+trap exit_cleanup EXIT
+
+#---------------------------------------------------------------------------
+#
+# Now lets go ahead an build the USB stick
+# work derived from https://mojo.redhat.com/docs/DOC-89733
+#
+
+echo "WARNING!!! this script could destroy your hard disk data!!"
+echo "Be sure that the device you are going to input is the right one!!"
+echo ""
+lsblk -S 
+
+if [ -z "${2}" ]; then
+   echo ""
+   echo "Device (example: sda, sdb, hda):"
+
+   #Reading the device name
+   read DEVICE
+else
+   DEVICE=${2}
+   [ ! -b ${2} ] && error "/dev/${2} does not exist"
+fi 
+
+echo "continue with /dev/$DEVICE"
+[ ! -b /dev/$DEVICE ] && error "device $DEVICE not found"
+for d in /dev/${DEVICE}?*; do
+  echo -n "Checking $d ... "
+  umount -f ${d} ; echo "unmounted with rc=$?"
+done
+
+# We clear all the partition table, bootloader or other info at the begining of the USB disk
+echo "Clearing boot table"
+dd if=/dev/zero of=/dev/$DEVICE bs=1M count=10
+
+# Prepare the USB media with one bootable FAT32 partition
+#
+# Gerät      Boot  Anfang     Ende Sektoren Größe Kn Typ
+# /dev/sdc1          2048  8390655  8388608    4G 83 Linux
+# /dev/sdc2       8390656 31129599 22738944 10,9G 83 Linux
+
+echo "Partitioning disk"
+parted --script /dev/$DEVICE mklabel msdos  mkpart primary fat32 2048s 8390655s mkpart primary ext4 8390656s 100% set 1 boot on || error "Cannot partition device $DEVICE"
+
+# Create a FAT32 and EXT4 filesystem with a label:
+echo "Creating Filesystems"
+mkdosfs -F 32 -n "$name" /dev/${DEVICE}1
+mkfs.ext4 -L CONTENT /dev/${DEVICE}2
+
+# Create Life iso 
+# maybe the options help: --extra-kernel-args --ks
+livecd-iso-to-disk --noverify --resetmbr --label "${name}" ${iso}  /dev/${DEVICE}1 || error "Cannot create disk"
+
+# Modify boot params
+mount /dev/${DEVICE}1 /mnt || error "Cannot mount USB Flash boot partition"
+sed -i 's,^\(.*\)\(LABEL=[^ ]*\)\(.*\),\1'LABEL=${name}'\3,g' /mnt/syslinux/syslinux.cfg
+sed -i 's,^\(.*\)\(LABEL=[^ ]*\)\(.*\),\1'LABEL=${name}'\3,g' /mnt/EFI/BOOT/grub.cfg
+
+#### Now we have a complete bootable USB Stick with a currrent RHEL version
+#### On the ext4 filesystem on the stick you can now place the demo tasks and kickstarfile to finalize the kickstart server ...
+#### BETTER DO THIS AS A PLAYBOOK AS WELL ....
+#  The following needs to be added to the syslinux.cfg and grub.cfg:
+# ------------------
+#  label linux
+#  menu label ^Autoinstall Red Hat Enterprise Linux 7.4
+#  kernel vmlinuz
+#  append initrd=initrd.img inst.stage2=hd:LABEL=RHEL_DEMO ip=dhcp inst.lang=de_DE.UTF-8 inst.keymap=de-latin1-nodeadkeys inst.sshd ks=hd:LABEL=CONTENT:kickstarts/base-srv-ks.cfg
+# -------------------
+
+
+# End of the script
+

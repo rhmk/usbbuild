@@ -1,0 +1,4 @@
+---
+# defaults file for tower-install
+tower_license: /root/tower_license.txt
+

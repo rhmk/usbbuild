@@ -1,0 +1,11 @@
+---
+# defaults file for setup-dnsmasq
+# the dafault domain is example.net
+# the default network 172.32.32.0/24
+#
+demo_domain: example.net
+demo_network_prefix: 172.32.32.
+demo_mac_prefix: "52:54:00:20:20:"
+demonet: '{{ demo_domain | replace (".","_") }}'
+
+kvm_template_size: 8G

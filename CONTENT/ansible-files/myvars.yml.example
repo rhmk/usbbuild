@@ -1,0 +1,33 @@
+#
+# Subscription
+# If you want to install offline remove all lines that start with reg_
+#
+reg_activation_key: my-activation-key
+reg_organization_id: 1234567890
+reg_osrelease: 7.4
+#repo_reset: true
+repositories:
+            - rhel-7-server-e4s-rpms
+            - rhel-7-server-extras-rpms
+            - rhel-ha-for-rhel-7-server-e4s-rpms
+            - rhel-sap-for-rhel-7-server-e4s-rpms
+            - rhel-sap-hana-for-rhel-7-server-e4s-rpms
+
+#
+# Virtualization settings
+#
+demo_domain: example.net
+demo_network_prefix: 172.32.32.
+demo_mac_prefix: "52:54:00:20:20:"
+demonet: '{{ demo_domain | replace (".","_") }}'
+
+#
+# reposerver settings
+#
+reposync_server: "{{ demo_network_prefix + '1' }}"
+reposync_cron: false
+
+#
+# Tower Server settings
+tower_adminpw: "redhat"
+tower_license: /var/lib/awx/projects/rhsap-demo/tower-license.yml

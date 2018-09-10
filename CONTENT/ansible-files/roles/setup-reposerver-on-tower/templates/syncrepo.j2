@@ -1,0 +1,26 @@
+#!/bin/bash
+
+SERVERIP={{ reposync_server | default(ansible_hostname) }} 
+
+cd /var/www/html/repos
+
+#Full or Diff sync the Repos
+reposync {{ reposync_param | default('-n -d -l --downloadcomps --download-metadata') }}
+
+ls -l | grep ^d | awk '{print $9}' | while read dirs; do
+  echo $dirs
+  if [ -f ${dirs}/comps.xml ]; then
+     createrepo -v ${dirs}/ -g comps.xml
+  else
+     createrepo -v ${dirs}/
+  fi
+
+  rf=/var/www/html/repofiles/${dirs}.repo
+  echo "[$dirs]" > $rf
+  echo "name=$dirs" >> $rf
+  echo "baseurl=https://${SERVERIP}/repos/$dirs/" >> $rf
+  echo "enabled=1" >> $rf
+  echo "gpgcheck=0" >> $rf
+
+done
+
