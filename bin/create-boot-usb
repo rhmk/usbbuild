@@ -67,7 +67,9 @@ dd if=/dev/zero of=/dev/$DEVICE bs=1M count=10
 # /dev/sdc2       8390656 31129599 22738944 10,9G 83 Linux
 
 echo "Partitioning disk"
-parted --script /dev/$DEVICE mklabel msdos  mkpart primary fat32 2048s 8390655s mkpart primary ext4 8390656s 100% set 1 boot on || error "Cannot partition device $DEVICE"
+#parted --script /dev/$DEVICE mklabel msdos  mkpart primary fat32 2048s 8390655s mkpart primary ext4 8390656s 100% set 1 boot on || error "Cannot partition device $DEVICE"
+parted --script /dev/$DEVICE mklabel msdos  mkpart primary fat32 2048s 8984604s mkpart primary ext4 8984605s 100% set 1 boot on || error "Cannot partition device $DEVICE"
+
 
 # Create a FAT32 and EXT4 filesystem with a label:
 echo "Creating Filesystems"
