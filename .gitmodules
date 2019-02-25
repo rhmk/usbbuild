@@ -1,0 +1,15 @@
+[submodule "CONTENT/ansible-files/roles/sap-base-settings"]
+	path = CONTENT/ansible-files/roles/sap-base-settings
+	url = https://github.com/mk-ansible-roles/sap-base-settings.git
+[submodule "CONTENT/ansible-files/roles/sap-hana-preconfigure"]
+	path = CONTENT/ansible-files/roles/sap-hana-preconfigure
+	url = https://github.com/mk-ansible-roles/sap-hana-preconfigure.git
+[submodule "CONTENT/ansible-files/roles/sap-hana-hostagent"]
+	path = CONTENT/ansible-files/roles/sap-hana-hostagent
+	url = https://github.com/mk-ansible-roles/sap-hana-hostagent.git
+[submodule "CONTENT/ansible-files/roles/sap-hana-deployment"]
+	path = CONTENT/ansible-files/roles/sap-hana-deployment
+	url = https://github.com/mk-ansible-roles/sap-hana-deployment.git
+[submodule "CONTENT/ansible-files/roles/sap-hana-mediacheck"]
+	path = CONTENT/ansible-files/roles/sap-hana-mediacheck
+	url = https://github.com/mk-ansible-roles/sap-hana-mediacheck.git

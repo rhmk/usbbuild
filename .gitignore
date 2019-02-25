@@ -12,5 +12,5 @@ CONTENT/data/authorized_keys
 CONTENT/data/tower_license*
 CONTENT/ansible-files/myvars.yml
 CONTENT/ansible-files/tower-license.*
-CONTENT/ansible-tower-setup*
+ansible-tower-setup*
 
