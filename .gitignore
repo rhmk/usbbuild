@@ -4,8 +4,7 @@
 *.swo
 muff*
 CONTENT/*.retry
-CONTENT/downloads/redhat-repos/*
-CONTENT/downloads/ansible-tower-setup-bundle*
+CONTENT/downloads/*
 CONTENT/data/ansible-ssh-key
 CONTENT/data/ansible-ssh-key.pub
 CONTENT/data/authorized_keys
